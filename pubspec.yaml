@@ -1,0 +1,28 @@
+name: redo_boilerplate
+description: CLI to scaffold Flutter boilerplate (themes, dependencies, folders)
+version: 0.1.0
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  args: ^2.5.0
+  prompts: ^2.0.0
+  path: ^1.9.0
+  yaml_edit: ^2.2.1
+  mustache_template: ^2.0.0
+  io: ^1.0.4
+  mason_logger: ^0.3.0
+
+dev_dependencies:
+  lints: ^3.0.0
+
+repository: https://github.com/yourname/redo_boilerplate
+issue_tracker: https://github.com/yourname/redo_boilerplate/issues
+homepage: https://github.com/yourname/redo_boilerplate
+
+executables:
+  boiler: boiler
+  redo_boiler: redo_boiler
+
+
+

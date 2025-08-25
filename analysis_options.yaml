@@ -1,0 +1,12 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - example/**
+    - build/**
+    - .dart_tool/**
+
+linter:
+  rules:
+    avoid_print: false
+
