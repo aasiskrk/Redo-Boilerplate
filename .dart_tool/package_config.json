@@ -33,9 +33,9 @@
     },
     {
       "name": "lints",
-      "rootUri": "file:///C:/Users/nisch/AppData/Local/Pub/Cache/hosted/pub.dev/lints-3.0.0",
+      "rootUri": "file:///C:/Users/nisch/AppData/Local/Pub/Cache/hosted/pub.dev/lints-6.0.0",
       "packageUri": "lib/",
-      "languageVersion": "3.0"
+      "languageVersion": "3.8"
     },
     {
       "name": "mason_logger",
