@@ -50,4 +50,4 @@ See `example/USAGE.md` for usage notes.
 See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
-MIT © 2025 Your Name
+MIT © 2025 Aashista Karki
