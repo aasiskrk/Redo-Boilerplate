@@ -16,9 +16,9 @@ dependencies:
 dev_dependencies:
   lints: ^3.0.0
 
-repository: https://github.com/yourname/redo_boilerplate
-issue_tracker: https://github.com/yourname/redo_boilerplate/issues
-homepage: https://github.com/yourname/redo_boilerplate
+repository: https://github.com/aasiskrk/Redo-Boilerplate
+issue_tracker: https://github.com/aasiskrk/Redo-Boilerplate/issues
+homepage: https://github.com/aasiskrk/Redo_Boilerplate
 
 executables:
   boiler: boiler
