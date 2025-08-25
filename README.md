@@ -13,30 +13,45 @@ A Dart CLI that scaffolds Flutter boilerplate (architecture folders, constants, 
 
 ## Installation
 
-```bash
-  dev_dependencies:
-    redo_boilerplate: ^1.0.0
-```
-
+Option A) Global (run from any project)
 ```bash
 dart pub global activate redo_boilerplate
+# On Windows PowerShell, ensure global pub cache bin is on PATH (once):
+$env:Path += ";$HOME\AppData\Local\Pub\Cache\bin"
+# To persist it:
+setx PATH "$($env:Path);$HOME\AppData\Local\Pub\Cache\bin"
+```
+
+Option B) As a dev dependency (per-project)
+```yaml
+dev_dependencies:
+  redo_boilerplate: ^1.0.0
+```
+Then:
+```bash
+flutter pub get   # or: dart pub get
 ```
 
 ## Usage
+Global usage (recommended):
 ```bash
-# In current project
-redo_boiler init
+# Scaffold into current project (note: -d requires a path, use . for current)
+redo_boiler init -y -d .
 
-# Non-interactive defaults (clean architecture)
-redo_boiler init -y
+# Interactive mode (you will be prompted)
+redo_boiler init -d .
 
 # Scaffold into a specific directory
-redo_boiler init -d path/to/app
+redo_boiler init -y -d path/to/app
 ```
 
-If using without global activation:
+Via dev dependency (no global install):
 ```bash
-dart run redo_boiler init -y -d .
+# In your app project root
+dart run redo_boilerplate:redo_boiler init -y -d .
+
+# Or interactive
+dart run redo_boilerplate:redo_boiler init -d .
 ```
 
 ## Flags
