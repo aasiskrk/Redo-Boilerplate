@@ -12,6 +12,12 @@ A Dart CLI that scaffolds Flutter boilerplate (architecture folders, constants, 
 - Generates themes under `lib/constants/theme` and seed `app/app.dart`, `main.dart`
 
 ## Installation
+
+```bash
+  dev_dependencies:
+    redo_boilerplate: ^1.0.0
+```
+
 ```bash
 dart pub global activate redo_boilerplate
 ```
