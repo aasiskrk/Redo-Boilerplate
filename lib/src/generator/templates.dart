@@ -2,23 +2,26 @@ import 'dart:io';
 
 import '../utils/logger.dart';
 
-class AppThemeTemplate {
-  static String light() => '''
-import 'package:flutter/material.dart';
-
-class AppTheme {
-	static final ThemeData light = ThemeData.light(useMaterial3: true);
-	static final ThemeData dark = ThemeData.dark(useMaterial3: true);
-}
-''';
-}
-
 Future<void> generateAppFile(
-    {required Logger logger, required String directoryPath}) async {
+    {required Logger logger,
+    required String directoryPath,
+    bool useLocalization = false}) async {
   final file = File(_pathJoin(directoryPath, 'lib/app/app.dart'));
   await file.parent.create(recursive: true);
+
+  final localizationImports =
+      useLocalization ? "import '../l10n/app_localizations.dart';" : '';
+  final localizationDelegates = useLocalization
+      ? "localizationsDelegates: AppLocalizations.localizationsDelegates,"
+      : '';
+  final supportedLocales = useLocalization
+      ? "supportedLocales: AppLocalizations.supportedLocales,"
+      : '';
+
   await file.writeAsString('''
 import 'package:flutter/material.dart';
+import '../constants/theme/theme.dart';
+$localizationImports
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -28,6 +31,10 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'your proj',
+      theme: lightModeTheme,
+      darkTheme: darkModeTheme,
+      $localizationDelegates
+      $supportedLocales
       home: const Scaffold(body: Center(child: Text('Hello'))),
     );
   }
@@ -485,21 +492,115 @@ ThemeData darkModeTheme = ThemeData(
   logger.info('Wrote constants theme files');
 }
 
-Future<void> generateThemeFiles(String choice,
+Future<void> generateLocalizationFiles(
     {required Logger logger, required String directoryPath}) async {
-  final file = File(_pathJoin(directoryPath, 'lib/src/theme/app_theme.dart'));
-  if (!await file.parent.exists()) {
-    await file.parent.create(recursive: true);
+  // Create l10n.yaml file
+  final l10nYaml = File(_pathJoin(directoryPath, 'l10n.yaml'));
+  await l10nYaml.writeAsString('''
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+''');
+  logger.info('Wrote l10n.yaml');
+
+  // Create l10n directory and files
+  final l10nDir = Directory(_pathJoin(directoryPath, 'lib/l10n'));
+  await l10nDir.create(recursive: true);
+
+  // English ARB file
+  final enArb = File(_pathJoin(directoryPath, 'lib/l10n/app_en.arb'));
+  await enArb.writeAsString('''
+{
+  "@@locale": "en",
+  "appTitle": "Your App",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "hello": "Hello",
+  "@hello": {
+    "description": "A greeting message"
+  },
+  "welcome": "Welcome to the app",
+  "@welcome": {
+    "description": "Welcome message"
+  }
+}
+''');
+  logger.info('Wrote lib/l10n/app_en.arb');
+
+  // Nepali ARB file
+  final npArb = File(_pathJoin(directoryPath, 'lib/l10n/app_np.arb'));
+  await npArb.writeAsString('''
+{
+  "@@locale": "np",
+  "appTitle": "तपाईंको एप",
+  "@appTitle": {
+    "description": "एप्लिकेसनको शीर्षक"
+  },
+  "hello": "नमस्ते",
+  "@hello": {
+    "description": "एक अभिवादन संदेश"
+  },
+  "welcome": "एपमा स्वागत छ",
+  "@welcome": {
+    "description": "स्वागत संदेश"
+  }
+}
+''');
+  logger.info('Wrote lib/l10n/app_np.arb');
+
+  // Localizations class
+  final localizationsFile =
+      File(_pathJoin(directoryPath, 'lib/l10n/app_localizations.dart'));
+  await localizationsFile.writeAsString('''
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
+
+class AppLocalizations {
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = [
+    delegate,
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
+
+  static const List<Locale> supportedLocales = [
+    Locale('en'),
+    Locale('np'),
+  ];
+
+  static AppLocalizations of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations)!;
   }
 
-  final content = switch (choice) {
-    'light' => AppThemeTemplate.light(),
-    'dark' => AppThemeTemplate.light(),
-    _ => AppThemeTemplate.light(),
-  };
-  await file.writeAsString(content);
-  logger.info(
-      'Wrote ' + _pathJoin(directoryPath, 'lib/src/theme/app_theme.dart'));
+  String get appTitle => Intl.message('Your App', name: 'appTitle');
+  String get hello => Intl.message('Hello', name: 'hello');
+  String get welcome => Intl.message('Welcome to the app', name: 'welcome');
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) {
+    return ['en', 'np'].contains(locale.languageCode);
+  }
+
+  @override
+  Future<AppLocalizations> load(Locale locale) async {
+    return AppLocalizations();
+  }
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+''');
+  logger.info('Wrote lib/l10n/app_localizations.dart');
 }
 
 String _pathJoin(String a, String b) {

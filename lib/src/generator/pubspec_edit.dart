@@ -13,7 +13,12 @@ Future<void> addDependencies(Map<String, String> deps,
   final editor = YamlEditor(text);
 
   for (final entry in deps.entries) {
-    editor.update(['dependencies', entry.key], entry.value);
+    if (entry.value == 'sdk:flutter') {
+      // Handle SDK dependencies properly
+      editor.update(['dependencies', entry.key], {'sdk': 'flutter'});
+    } else {
+      editor.update(['dependencies', entry.key], entry.value);
+    }
     logger?.info('Added dependency ${entry.key}: ${entry.value}');
   }
 

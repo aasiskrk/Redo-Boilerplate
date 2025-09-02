@@ -63,14 +63,29 @@ Future<void> _handleInit(Logger logger,
     'pretty_dio_logger': '^1.3.1',
   }, directoryPath: targetDir, logger: logger);
 
+  // Ask for localization
+  final useLocalization = acceptDefaults
+      ? false
+      : SimplePrompts.choose('Enable localization?', ['no', 'yes']) == 'yes';
+
   // Generate required files/subtrees
   await generateConstantsFiles(logger: logger, directoryPath: targetDir);
   await generateNetworkingFiles(logger: logger, directoryPath: targetDir);
   await generateApiEndpoints(logger: logger, directoryPath: targetDir);
   await generateConstantsThemeFiles(logger: logger, directoryPath: targetDir);
-  await generateThemeFiles('both', logger: logger, directoryPath: targetDir);
-  await generateAppFile(logger: logger, directoryPath: targetDir);
+  await generateAppFile(
+      logger: logger,
+      directoryPath: targetDir,
+      useLocalization: useLocalization);
   await generateMainFile(logger: logger, directoryPath: targetDir);
+
+  if (useLocalization) {
+    await generateLocalizationFiles(logger: logger, directoryPath: targetDir);
+    await addDependencies({
+      'flutter_localizations': 'sdk:flutter',
+      'intl': '^0.20.2',
+    }, directoryPath: targetDir, logger: logger);
+  }
 
   // Optionally run pub get
   await _runPubGet(logger, workingDirectory: targetDir);
